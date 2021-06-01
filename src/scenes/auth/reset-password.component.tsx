@@ -32,7 +32,7 @@ export const ResetPasswordScreen = (props: ResetPasswordScreenProps): LayoutElem
       <Button
         style={styles.button}
         onPress={props.handleSubmit}>
-        DONE
+        FEITO
       </Button>
     </React.Fragment>
   );

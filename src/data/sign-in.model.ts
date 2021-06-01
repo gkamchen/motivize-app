@@ -17,7 +17,7 @@ export class SignInData {
 }
 
 export const SignInSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email'),
-  password: Yup.string().min(8, 'Password must be at least 8 characters'),
+  email: Yup.string().email('Email inválido'),
+  password: Yup.string().min(8, 'A senha deve conter no mínimo 8 caracteres'),
 });
 

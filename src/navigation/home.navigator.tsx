@@ -66,12 +66,12 @@ const HomeBottomNavigator = (): React.ReactElement => (
     <BottomTab.Screen
       name={AppRoute.TODO}
       component={TodoNavigator}
-      options={{ title: 'TODO', tabBarIcon: LayoutIcon }}
+      options={{ title: 'A FAZER', tabBarIcon: LayoutIcon }}
     />
     <BottomTab.Screen
       name={AppRoute.PROFILE}
       component={ProfileNavigator}
-      options={{ title: 'PROFILE', tabBarIcon: PersonIcon }}
+      options={{ title: 'PERFIL', tabBarIcon: PersonIcon }}
     />
   </BottomTab.Navigator>
 );
@@ -87,7 +87,7 @@ export const HomeNavigator = (): React.ReactElement => (
     <Drawer.Screen
       name={AppRoute.ABOUT}
       component={AboutScreen}
-      options={{ title: 'About', drawerIcon: InfoIcon }}
+      options={{ title: 'Sobre', drawerIcon: InfoIcon }}
     />
   </Drawer.Navigator>
 );

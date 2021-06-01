@@ -45,7 +45,7 @@ export const TodoDetailsScreen = (props: TodoDetailsScreenProps): LayoutElement 
         </View>
         <Button
           onPress={props.navigation.goBack}>
-          COMPLETE
+          COMPLETO
         </Button>
       </Layout>
     </React.Fragment>

@@ -15,14 +15,14 @@ export const ProfileScreen = (props: ProfileScreenProps): SafeAreaLayoutElement 
     style={styles.safeArea}
     insets={SaveAreaInset.TOP}>
     <Toolbar
-      title='React Navigation Ex 🐱'
+      title='Motivize 📍'
       backIcon={MenuIcon}
       onBackPress={props.navigation.toggleDrawer}
     />
     <Divider/>
     <Layout style={styles.container}>
       <Text category='h1'>
-        PROFILE
+        PERFIL
       </Text>
     </Layout>
   </SafeAreaLayout>

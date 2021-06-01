@@ -54,7 +54,7 @@ export const SignInScreen = (props: SignInScreenProps) => {
       <FormInput
         id='password'
         style={styles.formControl}
-        placeholder='Password'
+        placeholder='Senha'
         secureTextEntry={!passwordVisible}
         accessoryRight={renderPasswordIcon}
       />
@@ -63,19 +63,19 @@ export const SignInScreen = (props: SignInScreenProps) => {
           style={styles.formControl}
           checked={shouldRemember}
           onChange={setShouldRemember}>
-          Remember Me
+          Lembrar-me
         </CheckBox>
         <Button
           appearance='ghost'
           status='basic'
           onPress={navigateResetPassword}>
-          Forgot password?
+          Esqueceu a senha?
         </Button>
       </View>
       <Button
         style={styles.submitButton}
         onPress={props.handleSubmit}>
-        SIGN IN
+        ENTRAR
       </Button>
     </React.Fragment>
   );
@@ -98,7 +98,7 @@ export const SignInScreen = (props: SignInScreenProps) => {
           appearance='ghost'
           status='basic'
           onPress={navigateSignUp}>
-          Don't have an account?
+          Não possui conta?
         </Button>
       </Layout>
     </React.Fragment>

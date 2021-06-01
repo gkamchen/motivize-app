@@ -6,10 +6,10 @@ import { TodoDoneScreenProps } from '../../navigation/todo.navigator';
 export const TodoDoneScreen = (props: TodoDoneScreenProps): LayoutElement => (
   <Layout style={styles.container}>
     <Text category='h4'>
-      No done todos yet.
+      Ainda não foram concluídos.
     </Text>
     <Button style={styles.addButton}>
-      ADD TODO
+      ADICIONAR A FAZERES
     </Button>
   </Layout>
 );

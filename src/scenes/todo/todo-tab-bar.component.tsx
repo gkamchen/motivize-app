@@ -42,11 +42,11 @@ export const TodoTabBar = (props: TodoScreenProps): SafeAreaLayoutElement => {
   const renderToolbarMenu = (): React.ReactElement => (
     <React.Fragment>
       <MenuItem
-        title='About'
+        title='Sobre'
         accessoryLeft={InfoIcon}
       />
       <MenuItem
-        title='Log Out'
+        title='Sair'
         accessoryLeft={LogoutIcon}
       />
     </React.Fragment>
@@ -55,7 +55,7 @@ export const TodoTabBar = (props: TodoScreenProps): SafeAreaLayoutElement => {
   return (
     <SafeAreaLayout insets={SaveAreaInset.TOP}>
       <Toolbar
-        title='React Navigation Ex 🐱'
+        title='Motivize 📍'
         onMenuItemSelect={onMenuItemSelect}
         menu={renderToolbarMenu}
         backIcon={MenuIcon}
