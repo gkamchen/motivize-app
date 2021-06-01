@@ -30,14 +30,13 @@ export const SignInScreen = (props: SignInScreenProps) => {
     
       console.log(data);
       console.log(data.email);
+      navigateHome();
 
     }
     catch(Error){
 
       console.log(Error.message);
     }
-
-    //navigateHome();
   };
 
   const navigateHome = (): void => {
