@@ -8,14 +8,36 @@ import { FormInput } from '../../components/form-input.component';
 import { EyeIcon, EyeOffIcon } from '../../assets/icons';
 import { SignInData, SignInSchema } from '../../data/sign-in.model';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import axios from 'axios';
 
 export const SignInScreen = (props: SignInScreenProps) => {
 
   const [shouldRemember, setShouldRemember] = React.useState<boolean>(false);
   const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false);
 
-  const onFormSubmit = (values: SignInData): void => {
-    navigateHome();
+  const onFormSubmit = async (values: SignInData): Promise<void> => {
+
+    try {
+      const { data } = await axios.get(
+        `https://parseapi.back4app.com/login?username=${values.email}&password=${values.password}`,
+        {
+          headers: {
+            'X-Parse-Application-Id': 'Lw7G4z03GONWsOTnnTmIuhB9qfPHW2aulUi6uHNe',
+            'X-Parse-REST-API-Key': 'yh0F4KepoCVEYql8w0fuMgD2glcSHodmTaCm6bqP',
+          },
+        },
+      );
+    
+      console.log(data);
+      console.log(data.email);
+
+    }
+    catch(Error){
+
+      console.log(Error.message);
+    }
+
+    //navigateHome();
   };
 
   const navigateHome = (): void => {
