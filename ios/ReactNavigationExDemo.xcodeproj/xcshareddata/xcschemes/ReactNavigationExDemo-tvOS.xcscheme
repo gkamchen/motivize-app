@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-               BuildableName = "ReactNavigationExDemo-tvOS.app"
-               BlueprintName = "ReactNavigationExDemo-tvOS"
-               ReferencedContainer = "container:ReactNavigationExDemo.xcodeproj">
+               BuildableName = "Motivize-tvOS.app"
+               BlueprintName = "Motivize-tvOS"
+               ReferencedContainer = "container:Motivize.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "ReactNavigationExDemo-tvOSTests.xctest"
-               BlueprintName = "ReactNavigationExDemo-tvOSTests"
-               ReferencedContainer = "container:ReactNavigationExDemo.xcodeproj">
+               BuildableName = "Motivize-tvOSTests.xctest"
+               BlueprintName = "Motivize-tvOSTests"
+               ReferencedContainer = "container:Motivize.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -61,9 +61,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "ReactNavigationExDemo-tvOSTests.xctest"
-               BlueprintName = "ReactNavigationExDemo-tvOSTests"
-               ReferencedContainer = "container:ReactNavigationExDemo.xcodeproj">
+               BuildableName = "Motivize-tvOSTests.xctest"
+               BlueprintName = "Motivize-tvOSTests"
+               ReferencedContainer = "container:Motivize.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -71,9 +71,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "ReactNavigationExDemo-tvOS.app"
-            BlueprintName = "ReactNavigationExDemo-tvOS"
-            ReferencedContainer = "container:ReactNavigationExDemo.xcodeproj">
+            BuildableName = "Motivize-tvOS.app"
+            BlueprintName = "Motivize-tvOS"
+            ReferencedContainer = "container:Motivize.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -94,9 +94,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "ReactNavigationExDemo-tvOS.app"
-            BlueprintName = "ReactNavigationExDemo-tvOS"
-            ReferencedContainer = "container:ReactNavigationExDemo.xcodeproj">
+            BuildableName = "Motivize-tvOS.app"
+            BlueprintName = "Motivize-tvOS"
+            ReferencedContainer = "container:Motivize.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -113,9 +113,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "ReactNavigationExDemo-tvOS.app"
-            BlueprintName = "ReactNavigationExDemo-tvOS"
-            ReferencedContainer = "container:ReactNavigationExDemo.xcodeproj">
+            BuildableName = "Motivize-tvOS.app"
+            BlueprintName = "Motivize-tvOS"
+            ReferencedContainer = "container:Motivize.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
