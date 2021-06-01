@@ -36,17 +36,17 @@ export const SignUpScreen = (props: SignUpScreenProps): LayoutElement => {
       <FormInput
         id='password'
         style={styles.formControl}
-        placeholder='Password'
+        placeholder='Senha'
       />
       <FormInput
         id='username'
         style={styles.formControl}
-        placeholder='Username'
+        placeholder='Usuário'
       />
       <Button
         style={styles.submitButton}
         onPress={props.handleSubmit}>
-        SIGN UP
+        CADASTRAR
       </Button>
     </React.Fragment>
   );
@@ -73,7 +73,7 @@ export const SignUpScreen = (props: SignUpScreenProps): LayoutElement => {
           appearance='ghost'
           status='basic'
           onPress={navigateSignIn}>
-          Already have an account?
+          Já possui uma conta?
         </Button>
       </Layout>
     </React.Fragment>

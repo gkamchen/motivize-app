@@ -19,8 +19,8 @@ export class SignUpData {
 }
 
 export const SignUpSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email'),
-  password: Yup.string().min(8, 'Password must be at least 8 characters'),
-  username: Yup.string().min(2, 'Username must be at least 2 characters'),
+  email: Yup.string().email('Email inválido'),
+  password: Yup.string().min(8, 'A senha deve conter no mínimo 8 caracteres'),
+  username: Yup.string().min(2, 'O usuário deve conter no mínimo 2 caracteres'),
 });
 

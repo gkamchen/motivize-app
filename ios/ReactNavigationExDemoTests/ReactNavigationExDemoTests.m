@@ -14,11 +14,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface ReactNavigationExDemoTests : XCTestCase
+@interface MotivizeTests : XCTestCase
 
 @end
 
-@implementation ReactNavigationExDemoTests
+@implementation MotivizeTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL(^)(UIView *view))test
 {

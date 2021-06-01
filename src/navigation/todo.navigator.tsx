@@ -64,12 +64,12 @@ const TodoTabsNavigator = (): React.ReactElement => (
     <TopTab.Screen
       name={AppRoute.TODO_IN_PROGRESS}
       component={TodoInProgressScreen}
-      options={{ title: 'IN PROGRESS', tabBarIcon: GridIcon }}
+      options={{ title: 'EM PROGRESSO', tabBarIcon: GridIcon }}
     />
     <TopTab.Screen
       name={AppRoute.TODO_DONE}
       component={TodoDoneScreen}
-      options={{ title: 'DONE', tabBarIcon: DoneAllIcon }}
+      options={{ title: 'FEITO', tabBarIcon: DoneAllIcon }}
     />
   </TopTab.Navigator>
 );

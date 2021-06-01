@@ -1,8 +1,8 @@
 platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-target 'ReactNavigationExDemo' do
-  # Pods for ReactNavigationExDemo
+target 'Motivize' do
+  # Pods for Motivize
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
   pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"
@@ -34,7 +34,7 @@ target 'ReactNavigationExDemo' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  target 'ReactNavigationExDemoTests' do
+  target 'MotivizeTests' do
     inherit! :search_paths
     # Pods for testing
   end
@@ -42,10 +42,10 @@ target 'ReactNavigationExDemo' do
   use_native_modules!
 end
 
-target 'ReactNavigationExDemo-tvOS' do
-  # Pods for ReactNavigationExDemo-tvOS
+target 'Motivize-tvOS' do
+  # Pods for Motivize-tvOS
 
-  target 'ReactNavigationExDemo-tvOSTests' do
+  target 'Motivize-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end

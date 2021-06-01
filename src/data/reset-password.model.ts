@@ -14,5 +14,5 @@ export class ResetPasswordData {
 }
 
 export const ResetPasswordSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email'),
+  email: Yup.string().email('Email inválido'),
 });

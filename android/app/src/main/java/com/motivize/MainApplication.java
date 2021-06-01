@@ -1,4 +1,4 @@
-package com.reactnavigationexdemo;
+package com.motivize;
 
 import android.app.Application;
 import android.content.Context;
