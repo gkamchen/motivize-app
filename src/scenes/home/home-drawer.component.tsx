@@ -6,7 +6,7 @@ import { DrawerHomeScreenProps } from '../../navigation/home.navigator';
 const DrawerHeader = (): React.ReactElement<ImageBackgroundProps> => (
   <ImageBackground
     style={styles.header}
-    source={require('../../assets/image-background.jpeg')}
+    source={require('../../assets/image-background.png')}
   />
 );
 

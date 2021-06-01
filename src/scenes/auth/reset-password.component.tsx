@@ -41,7 +41,7 @@ export const ResetPasswordScreen = (props: ResetPasswordScreenProps): LayoutElem
     <React.Fragment>
       <ImageBackground
         style={[styles.appBar, { paddingTop: insets.top }]}
-        source={require('../../assets/image-background.jpeg')}>
+        source={require('../../assets/image-background.png')}>
         <Toolbar
           appearance='control'
           onBackPress={props.navigation.goBack}
@@ -61,7 +61,7 @@ export const ResetPasswordScreen = (props: ResetPasswordScreenProps): LayoutElem
 
 const styles = StyleSheet.create({
   appBar: {
-    height: 192,
+    height: 140,
   },
   formContainer: {
     flex: 1,
