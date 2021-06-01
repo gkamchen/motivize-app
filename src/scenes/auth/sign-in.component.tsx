@@ -106,7 +106,7 @@ export const SignInScreen = (props: SignInScreenProps) => {
     <React.Fragment>
       <ImageBackground
         style={styles.appBar}
-        source={require('../../assets/image-background.jpeg')}
+        source={require('../../assets/image-background.png')}
       />
       <Layout style={styles.formContainer}>
         <Formik
@@ -129,7 +129,7 @@ export const SignInScreen = (props: SignInScreenProps) => {
 
 const styles = StyleSheet.create({
   appBar: {
-    height: 192,
+    height: 140,
   },
   formContainer: {
     flex: 1,

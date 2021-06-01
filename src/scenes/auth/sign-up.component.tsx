@@ -55,11 +55,8 @@ export const SignUpScreen = (props: SignUpScreenProps): LayoutElement => {
     <React.Fragment>
       <ImageBackground
         style={[styles.appBar, { paddingTop: insets.top }]}
-        source={require('../../assets/image-background.jpeg')}>
-        <Toolbar
-          appearance='control'
-          onBackPress={props.navigation.goBack}
-        />
+        source={require('../../assets/image-background.png')}>
+        
       </ImageBackground>
       <Layout style={styles.formContainer}>
         <Formik
@@ -82,7 +79,7 @@ export const SignUpScreen = (props: SignUpScreenProps): LayoutElement => {
 
 const styles = StyleSheet.create({
   appBar: {
-    height: 192,
+    height: 140,
   },
   formContainer: {
     flex: 1,
