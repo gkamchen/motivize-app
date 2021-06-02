@@ -40,6 +40,6 @@ export const HomeDrawer = (props: DrawerHomeScreenProps): DrawerElement => {
 
 const styles = StyleSheet.create({
   header: {
-    height: 160,
+    height: 110,
   },
 });

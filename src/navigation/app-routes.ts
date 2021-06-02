@@ -5,9 +5,8 @@ export enum AppRoute {
   RESET_PASSWORD = 'Resetar Senha',
   HOME = 'Home',
   TODO = 'A Fazer',
-  TODO_IN_PROGRESS = 'Em progresso',
+  TODO_BUTTON = 'Status',
   TODO_DONE = 'Feito',
-  TODO_DETAILS = 'Detalhes A Fazer',
   PROFILE = 'Perfil',
   ABOUT = 'Sobre',
 }
