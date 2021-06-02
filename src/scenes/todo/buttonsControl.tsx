@@ -9,12 +9,12 @@ import {
 } from '@ui-kitten/components';
 
 const StarIcon = (props) => (
-  <Icon {...props} name='star'/>
+  <Icon {...props} name='star' />
 );
 
 const LoadingIndicator = (props) => (
   <View style={[props.style, styles.indicator]}>
-    <Spinner size='small'/>
+    <Spinner size='small' />
   </View>
 );
 
@@ -26,16 +26,16 @@ export const ButtonsControl = () => {
   return (
     <Layout style={styles.container} level='3'>
 
-    <Button style={styles.button} status='primary' accessoryLeft={StarIcon}>
-      INICIAR INTERVALO
+      <Button style={styles.button} status='primary' accessoryLeft={StarIcon}>
+        INICIAR INTERVALO
     </Button>
 
-    <Button style={styles.button} status='primary' accessoryLeft={StarIcon}>
-      INICIAR ATENDIMENTO
+      <Button style={styles.button} status='primary' accessoryLeft={StarIcon}>
+        INICIAR ATENDIMENTO
     </Button>
-    
-    <Button style={styles.button} status='primary' accessoryLeft={StarIcon}>
-    INICIAR DIA
+
+      <Button style={styles.button} status='primary' accessoryLeft={StarIcon}>
+        INICIAR DIA
     </Button>
 
     </Layout>
