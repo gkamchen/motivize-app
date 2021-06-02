@@ -56,7 +56,10 @@ export const SignUpScreen = (props: SignUpScreenProps): LayoutElement => {
       <ImageBackground
         style={[styles.appBar, { paddingTop: insets.top }]}
         source={require('../../assets/image-background.png')}>
-        
+        <Toolbar
+          appearance='control'
+          onBackPress={props.navigation.goBack}
+        />
       </ImageBackground>
       <Layout style={styles.formContainer}>
         <Formik
