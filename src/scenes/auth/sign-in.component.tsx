@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import { ImageBackground, StyleSheet, View } from 'react-native';
 import { Button, CheckBox, Layout } from '@ui-kitten/components';
 import { Formik, FormikProps } from 'formik';
@@ -9,11 +9,18 @@ import { EyeIcon, EyeOffIcon } from '../../assets/icons';
 import { SignInData, SignInSchema } from '../../data/sign-in.model';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import axios from 'axios';
+import ConfirmModal from '../../components/modal.component';
 
 export const SignInScreen = (props: SignInScreenProps) => {
 
   const [shouldRemember, setShouldRemember] = React.useState<boolean>(false);
   const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false);
+
+  const confirmModalRef = createRef();
+
+  const getConfirmModalRef = () : any => {
+    return confirmModalRef.current;
+  };
 
   const onFormSubmit = async (values: SignInData): Promise<void> => {
 
@@ -27,15 +34,17 @@ export const SignInScreen = (props: SignInScreenProps) => {
           },
         },
       );
-    
+
       console.log(data);
       console.log(data.email);
       navigateHome();
 
     }
-    catch(Error){
+    catch (Error) {
 
-      console.log(Error.message);
+      getConfirmModalRef().show({
+        message: 'Email ou Senha inválidos!',
+      });
     }
   };
 
@@ -122,6 +131,7 @@ export const SignInScreen = (props: SignInScreenProps) => {
           Não possui conta?
         </Button>
       </Layout>
+      <ConfirmModal ref={confirmModalRef} />
     </React.Fragment>
   );
 };

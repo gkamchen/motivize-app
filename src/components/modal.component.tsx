@@ -14,22 +14,17 @@ const ConfirmModal = forwardRef((props, ref) => {
     const [state, setState] = useState({
         visible: false,
         message: '',
-        onYes: () => { },
-        onNo: () => { },
     });
 
     const show = ({
         message,
-        onYes,
-        onNo,
     }) => {
         setState({
             ...state,
             visible: true,
             message: message,
-            onYes: onYes,
-            onNo: onNo,
         });
+        setTimeout(hide, 2000);
     };
 
     const hide = () => {
@@ -43,18 +38,6 @@ const ConfirmModal = forwardRef((props, ref) => {
         hide();
     };
 
-    const handleOnYesButtonPress = () => {
-        hide();
-
-        state.onYes();
-    };
-
-    const handleOnNoButtonPress = () => {
-        hide();
-
-        state.onNo();
-    };
-
     useImperativeHandle(ref, () => ({
         show,
         hide,
@@ -63,15 +46,16 @@ const ConfirmModal = forwardRef((props, ref) => {
     const styles = StyleSheet.create({
         backdrop: {
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems:'center',
+            justifyContent:'center',
+            textAlign:'center',
         },
         buttonView: {
             justifyContent: 'flex-end',
             alignItems: 'center',
             flexDirection: 'row',
             marginTop: 10,
-        },
-        buttonYes: {
-            marginRight: 10,
         },
     });
 
@@ -89,19 +73,6 @@ const ConfirmModal = forwardRef((props, ref) => {
             <Card disabled={true}>
                 <Text>{message}</Text>
                 <View style={styles.buttonView}>
-                    <Button
-                        size='tiny'
-                        style={styles.buttonYes}
-                        onPress={handleOnYesButtonPress}
-                    >
-                        Sim
-                    </Button>
-                    <Button
-                        size='tiny'
-                        onPress={handleOnNoButtonPress}
-                    >
-                        Não
-                    </Button>
                 </View>
             </Card>
         </Modal>
