@@ -1,4 +1,4 @@
-import React, { createRef } from 'react';
+import React, { createRef, useState } from 'react';
 import { ImageBackground, StyleSheet, View } from 'react-native';
 import { Button, CheckBox, Layout } from '@ui-kitten/components';
 import { Formik, FormikProps } from 'formik';
@@ -22,6 +22,8 @@ export const SignInScreen = (props: SignInScreenProps) => {
     return confirmModalRef.current;
   };
 
+  const [formData, setFormData] = useState(SignInData.empty());
+
   const onFormSubmit = async (values: SignInData): Promise<void> => {
 
     try {
@@ -36,15 +38,15 @@ export const SignInScreen = (props: SignInScreenProps) => {
       );
 
       console.log(data);
-      console.log(data.email);
       navigateHome();
-
+      
     }
     catch (Error) {
 
       getConfirmModalRef().show({
         message: 'Email ou Senha inválidos!',
       });
+      console.log(Error)
     }
   };
 

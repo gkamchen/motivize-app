@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { BackHandler } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { motivize, mapping } from './themes';
@@ -11,16 +12,31 @@ export default (): React.ReactFragment => {
 
   // This value is used to determine the initial screen
   const isAuthorized: boolean = false;
+  
+  // useEffect(() => {
+  //   const backAction = () => {
+      
+  //     console.log('app');
+  //     return true;
+
+  //   };
+
+  //   const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+  //   return () => {
+  //     backHandler.remove();
+  //   }
+
+  // }, []);
 
   return (
     <React.Fragment>
-      <IconRegistry icons={EvaIconsPack}/>
+      <IconRegistry icons={EvaIconsPack} />
       <ApplicationProvider
         mapping={mapping}
         theme={motivize}>
         <SafeAreaProvider>
           <NavigationContainer>
-            <AppNavigator initialRouteName={isAuthorized ? AppRoute.HOME : AppRoute.AUTH}/>
+            <AppNavigator initialRouteName={isAuthorized ? AppRoute.HOME : AppRoute.AUTH} />
           </NavigationContainer>
         </SafeAreaProvider>
       </ApplicationProvider>

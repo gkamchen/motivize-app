@@ -1,20 +1,74 @@
-import React from 'react';
-import { ImageBackground, StyleSheet } from 'react-native';
+import React, { createRef, useEffect, useState } from 'react';
+import { BackHandler, ImageBackground, StyleSheet } from 'react-native';
 import { EdgeInsets, useSafeArea } from 'react-native-safe-area-context';
-import { Formik, FormikProps } from 'formik';
+import { Formik } from 'formik';
 import { Button, Layout, LayoutElement } from '@ui-kitten/components';
 import { SignUpScreenProps } from '../../navigation/auth.navigator';
 import { AppRoute } from '../../navigation/app-routes';
 import { Toolbar } from '../../components/toolbar.component';
 import { FormInput } from '../../components/form-input.component';
 import { SignUpData, SignUpSchema } from '../../data/sign-up.model';
+import axios from 'axios';
+import ConfirmModal from '../../components/modal.component';
 
 export const SignUpScreen = (props: SignUpScreenProps): LayoutElement => {
 
+  useEffect(() => {
+    const backAction = () => {
+
+      console.log('signUP');
+      navigateSignIn();
+      return true;
+
+    };
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () => {
+      backHandler.remove();
+    }
+
+  }, []);
+
   const insets: EdgeInsets = useSafeArea();
 
-  const onFormSubmit = (values: SignUpData): void => {
-    navigateHome();
+  const confirmModalRef = createRef();
+
+  const getConfirmModalRef = (): any => {
+    return confirmModalRef.current;
+  };
+
+  const [formData, setFormData] = useState(SignUpData.empty());
+
+  const onFormSubmit = async (values) => {
+    try {
+      const { data } = await axios.post(
+        'https://parseapi.back4app.com/users',
+        {
+          'username': values.username,
+          'email': values.email,
+          'password': values.password,
+        },
+        {
+          headers: {
+            'X-Parse-Application-Id': 'Lw7G4z03GONWsOTnnTmIuhB9qfPHW2aulUi6uHNe',
+            'X-Parse-REST-API-Key': 'yh0F4KepoCVEYql8w0fuMgD2glcSHodmTaCm6bqP',
+          },
+
+        },
+      );
+
+      setFormData(SignUpData.empty());
+      navigateHome();
+
+    } catch (Error) {
+
+      getConfirmModalRef().show({
+        message: 'Usuário ou email já cadastrado!',
+
+      });
+
+      console.log(Error);
+    }
   };
 
   const navigateHome = (): void => {
@@ -24,32 +78,6 @@ export const SignUpScreen = (props: SignUpScreenProps): LayoutElement => {
   const navigateSignIn = (): void => {
     props.navigation.navigate(AppRoute.SIGN_IN);
   };
-
-  const renderForm = (props: FormikProps<SignUpData>): React.ReactFragment => (
-    <React.Fragment>
-      <FormInput
-        id='email'
-        style={styles.formControl}
-        placeholder='Email'
-        keyboardType='email-address'
-      />
-      <FormInput
-        id='password'
-        style={styles.formControl}
-        placeholder='Senha'
-      />
-      <FormInput
-        id='username'
-        style={styles.formControl}
-        placeholder='Usuário'
-      />
-      <Button
-        style={styles.submitButton}
-        onPress={props.handleSubmit}>
-        CADASTRAR
-      </Button>
-    </React.Fragment>
-  );
 
   return (
     <React.Fragment>
@@ -65,8 +93,54 @@ export const SignUpScreen = (props: SignUpScreenProps): LayoutElement => {
         <Formik
           initialValues={SignUpData.empty()}
           validationSchema={SignUpSchema}
-          onSubmit={onFormSubmit}>
-          {renderForm}
+          onSubmit={onFormSubmit}
+        >
+          {({ handleSubmit }) =>
+            <React.Fragment>
+              <FormInput
+                id="email"
+                value={formData.email}
+                style={styles.formControl}
+                placeholder='Email'
+                keyboardType='email-address'
+                onChange={e => {
+                  setFormData({
+                    ...formData,
+                    email: e.nativeEvent.text,
+                  });
+                }}
+              />
+              <FormInput
+                id='password'
+                value={formData.password}
+                style={styles.formControl}
+                placeholder='Senha'
+                onChange={e => {
+                  setFormData({
+                    ...formData,
+                    password: e.nativeEvent.text,
+                  });
+                }}
+              />
+              <FormInput
+                id='username'
+                value={formData.username}
+                style={styles.formControl}
+                placeholder='Usuário'
+                onChange={e => {
+                  setFormData({
+                    ...formData,
+                    username: e.nativeEvent.text,
+                  });
+                }}
+              />
+              <Button
+                style={styles.submitButton}
+                onPress={handleSubmit}>
+                CADASTRAR
+              </Button>
+            </React.Fragment>
+          }
         </Formik>
         <Button
           style={styles.haveAccountButton}
@@ -76,6 +150,7 @@ export const SignUpScreen = (props: SignUpScreenProps): LayoutElement => {
           Já possui uma conta?
         </Button>
       </Layout>
+      <ConfirmModal ref={confirmModalRef} />
     </React.Fragment>
   );
 };

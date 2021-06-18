@@ -15,6 +15,9 @@ import {
 } from '../scenes/todo';
 import { DoneAllIcon, GridIcon } from '../assets/icons';
 
+
+
+
 type TodoNavigatorParams = {
   [AppRoute.TODO]: undefined;
 }
@@ -68,6 +71,6 @@ const TodoTabsNavigator = (): React.ReactElement => (
 
 export const TodoNavigator = (): React.ReactElement => (
   <Stack.Navigator headerMode='none'>
-    <Stack.Screen name={AppRoute.TODO} component={TodoTabsNavigator}/>
+    <Stack.Screen name={AppRoute.TODO} component={TodoTabsNavigator} />
   </Stack.Navigator>
 );
