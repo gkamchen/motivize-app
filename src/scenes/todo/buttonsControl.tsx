@@ -113,6 +113,8 @@ export const ButtonsControl = () => {
   const [bIntervalor, setIntervalo] = React.useState(INI_INTERVALO);
 
   const [currentCroDia, setCroDia] = React.useState('');
+  
+  const [currentChaveInt, setChaveInt] = React.useState('');
 
   const cronHorTrab = () => {
 
@@ -126,7 +128,7 @@ export const ButtonsControl = () => {
 
   };
 
-  const salveStateIntervalor = () => {
+  const GravarInicioInt = async () => {
 
       const intervalo = {
         'data': currentDay,
@@ -143,31 +145,38 @@ export const ButtonsControl = () => {
       var inter = JSON.stringify(intervalo);
       var chave = currentDay+';'+currentIniInt;
 
-    gravar(chave,inter);
+      setChaveInt(chave);
+
+      console.log("\n\nLOG INICIO INTERVALO: {"+currentChaveInt+"} ---> "+inter);
+
+    gravar(currentChaveInt,inter);
 
   };
 
   const gravarFimIntervalor = async () =>{
 
-    var chave = currentDay+';'+currentIniInt;
+    console.log("\n\nLOG FIM INTERVALO: {"+currentChaveInt+"} ---> ");
 
-    var valor = await buscar(chave);
+    var valor = await buscar(currentChaveInt);
+
     if (valor != null) {
+
+      console.log("\n\nLOG FIM INTERVALO: {"+currentChaveInt+"} ---> "+valor);
+
       var obj = JSON.parse(valor);
+
 
       obj.info.fimInt = currentFimInt;
 
       var inter = JSON.stringify(obj);
 
-      gravar(chave,inter);
+      gravar(currentChaveInt,inter);
 
     }
 
   };
 
-
   const gravar = (chave:string,valor:any) => {
-    console.log(valor);
     AsyncStorage.setItem(chave,valor);
   }
 
@@ -177,7 +186,7 @@ export const ButtonsControl = () => {
   };
 
   const getLocation = () => {
-
+    
     Geolocation.getCurrentPosition(
       (position) => {
         const currentLatitude = JSON.stringify(position.coords.latitude);
@@ -196,6 +205,7 @@ export const ButtonsControl = () => {
       setCurrentLongitude(currentLogitude);
     });
     setWatchId(watchId);
+
   }
 
   const claerLocation = () => {
@@ -204,15 +214,20 @@ export const ButtonsControl = () => {
 
   const onIntervalo = () => {
 
-    console.log("\nLOG: ----------->CLICK  BOTÃO INTERVALO -------> " + INTERVALO);
+    console.log("\n\nLOG: ------------ CLICK  BOTÃO INTERVALO ------------- ");
+    
+    console.log("\n\nLOG: INTERVALOR STATUS : {"+INTERVALO+"} " );
+
 
     if (INTERVALO === INI_INTERVALO) {
 
+      console.log("\n\nLOG: IF INICIAR INTERVALOR ----------------");
+      
       setIniInt(returnDateTime().horario);
       setFimInt("");
-
-      salveStateIntervalor();
       
+      GravarInicioInt();
+
       INTERVALO = FIM_INTERVALO;
       INTERVALO_STATUS = FIM_STATUS;
       INTERVALO_APAR = APAR_FIM;
@@ -222,7 +237,9 @@ export const ButtonsControl = () => {
       ATIVAR_BINTERVALO = ENABLE_BOTTON;
       
     } else {
-
+      
+      console.log("\n\nLOG: ELSE FIM INTERVALOR ----------------");
+      
       setFimInt(returnDateTime().horario);
 
       gravarFimIntervalor();
@@ -239,9 +256,11 @@ export const ButtonsControl = () => {
 
     setIntervalo(INTERVALO);
 
+    console.log("\n\n---------------------------------------------------------------------------");
+
   };
 
-  const onDia = async () => {
+  const onDia = () => {
 
     console.log("\nLOG: -----------> CLICK BOTÃO DIA -----> " + DIA);
 
@@ -251,21 +270,14 @@ export const ButtonsControl = () => {
 
       setDay(returnDateTime().dataF);
       setIniDia(returnDateTime().horario);
-      setFimDia("");
 
-      DIA = FIM_DIA;
-      DIA_STATUS = FIM_STATUS;
-      DIA_APAR = APAR_FIM;
-
-      ATIVAR_BDIA = ENABLE_BOTTON;
-      ATIVAR_BATENDIMENTO = ENABLE_BOTTON;
-      ATIVAR_BINTERVALO = ENABLE_BOTTON;
+      setTimeout(ativarBotDia, 2000);
 
     } else {
 
       setFimDia(returnDateTime().horario);
 
-      console.log(currentFimDia);
+      //setTimeout(console.log("Aguardar Carregar States ...."), 1000);
 
       ATIVAR_BDIA = ENABLE_BOTTON;
       ATIVAR_BATENDIMENTO = DISABLE_BOTTON;
@@ -280,6 +292,18 @@ export const ButtonsControl = () => {
     }
     setDia(DIA);
 
+  };
+
+  const ativarBotDia = () =>{
+    DIA = FIM_DIA;
+    DIA_STATUS = FIM_STATUS;
+    DIA_APAR = APAR_FIM;
+
+    ATIVAR_BDIA = ENABLE_BOTTON;
+    ATIVAR_BATENDIMENTO = ENABLE_BOTTON;
+    ATIVAR_BINTERVALO = ENABLE_BOTTON;
+
+    setDia(DIA);
   };
 
   const onAtendimento = () => {
