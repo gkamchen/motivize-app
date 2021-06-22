@@ -16,6 +16,7 @@ import {
 } from '@ui-kitten/components';
 import Geolocation from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-community/async-storage';
+import { promises } from 'dns';
 
 const StarIcon = (props) => (
   <Icon {...props} name='star' />
@@ -125,27 +126,54 @@ export const ButtonsControl = () => {
 
   };
 
-  const salveStateDia = () => {
+  const salveStateIntervalor = () => {
 
-      gravar('latitude',currentLatitude);
-      gravar('longitude',currentLogitude);
-      gravar('inicioDia',currentIniDia);
-      gravar('fimDia',currentFimDia);
+      const intervalo = {
+        'data': currentDay,
+        'inicioInt': currentIniInt,
+        'info':[
+          {
+            'latitude':currentLatitude,
+            'longitude':currentLogitude,
+            'fimInt':currentFimInt,
+          }
+        ]
+      };
 
-    buscar('latitude');
-    buscar('longitude');
-    buscar('inicioDia');
-    buscar('fimDia');
+      var inter = JSON.stringify(intervalo);
+      var chave = currentDay+';'+currentIniInt;
+
+    gravar(chave,inter);
 
   };
 
+  const gravarFimIntervalor = async () =>{
+
+    var chave = currentDay+';'+currentIniInt;
+
+    var valor = await buscar(chave);
+    if (valor != null) {
+      var obj = JSON.parse(valor);
+
+      obj.info.fimInt = currentFimInt;
+
+      var inter = JSON.stringify(obj);
+
+      gravar(chave,inter);
+
+    }
+
+  };
+
+
   const gravar = (chave:string,valor:any) => {
+    console.log(valor);
     AsyncStorage.setItem(chave,valor);
   }
 
-  const buscar = async (chave:string) =>{
+  const buscar = async (chave:string) => {
     const valor = await AsyncStorage.getItem(chave);
-    console.log(valor);
+    return valor;
   };
 
   const getLocation = () => {
@@ -183,26 +211,30 @@ export const ButtonsControl = () => {
       setIniInt(returnDateTime().horario);
       setFimInt("");
 
+      salveStateIntervalor();
+      
       INTERVALO = FIM_INTERVALO;
       INTERVALO_STATUS = FIM_STATUS;
       INTERVALO_APAR = APAR_FIM;
-
+      
       ATIVAR_BDIA = DISABLE_BOTTON;
       ATIVAR_BATENDIMENTO = DISABLE_BOTTON;
       ATIVAR_BINTERVALO = ENABLE_BOTTON;
-
+      
     } else {
 
       setFimInt(returnDateTime().horario);
 
+      gravarFimIntervalor();
+      
       ATIVAR_BDIA = ENABLE_BOTTON;
       ATIVAR_BATENDIMENTO = ENABLE_BOTTON;
       ATIVAR_BINTERVALO = ENABLE_BOTTON;
-
+      
       INTERVALO = INI_INTERVALO;
       INTERVALO_STATUS = INI_STATUS;
       INTERVALO_APAR = APAR_INI;
-
+      
     }
 
     setIntervalo(INTERVALO);
@@ -234,8 +266,6 @@ export const ButtonsControl = () => {
       setFimDia(returnDateTime().horario);
 
       console.log(currentFimDia);
-
-      salveStateDia();
 
       ATIVAR_BDIA = ENABLE_BOTTON;
       ATIVAR_BATENDIMENTO = DISABLE_BOTTON;
