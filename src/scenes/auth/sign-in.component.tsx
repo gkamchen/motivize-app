@@ -94,6 +94,7 @@ export const SignInScreen = (props: SignInScreenProps) => {
         <CheckBox
           style={styles.formControl}
           checked={shouldRemember}
+          disabled
           onChange={setShouldRemember}>
           Lembrar-me
         </CheckBox>

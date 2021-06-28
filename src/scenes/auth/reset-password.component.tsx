@@ -1,5 +1,5 @@
-import React from 'react';
-import { ImageBackground, StyleSheet } from 'react-native';
+import React, { createRef, useEffect, useState } from 'react';
+import { BackHandler, ImageBackground, StyleSheet } from 'react-native';
 import { EdgeInsets, useSafeArea } from 'react-native-safe-area-context';
 import { Button, Layout, LayoutElement } from '@ui-kitten/components';
 import { Formik, FormikProps } from 'formik';
@@ -8,34 +8,74 @@ import { AppRoute } from '../../navigation/app-routes';
 import { FormInput } from '../../components/form-input.component';
 import { Toolbar } from '../../components/toolbar.component';
 import { ResetPasswordData, ResetPasswordSchema } from '../../data/reset-password.model';
+import axios from 'axios';
+import ConfirmModal from '../../components/modal.component';
 
 export const ResetPasswordScreen = (props: ResetPasswordScreenProps): LayoutElement => {
 
   const insets: EdgeInsets = useSafeArea();
 
-  const onFormSubmit = (values: ResetPasswordData): void => {
-    navigateSignIn();
+  useEffect(() => {
+    const backAction = () => {
+
+      console.log('signUP');
+      navigateSignIn();
+      return true;
+
+    };
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+    return () => {
+      backHandler.remove();
+    }
+
+  }, []);
+
+  const confirmModalRef = createRef();
+
+  const getConfirmModalRef = (): any => {
+    return confirmModalRef.current;
+  };
+
+  const [formData, setFormData] = useState(ResetPasswordData.empty());
+
+  const onFormSubmit = async (values: ResetPasswordData): Promise<void> => {
+    try {
+      const { data } = await axios.post(
+        'https://parseapi.back4app.com/requestPasswordReset',
+        {
+          'email': values.email
+        },
+        {
+          headers: {
+            'X-Parse-Application-Id': 'Lw7G4z03GONWsOTnnTmIuhB9qfPHW2aulUi6uHNe',
+            'X-Parse-REST-API-Key': 'yh0F4KepoCVEYql8w0fuMgD2glcSHodmTaCm6bqP',
+          },
+
+        },
+      );
+
+      setFormData(ResetPasswordData.empty());
+      getConfirmModalRef().show({
+        message: 'Email enviado!',
+
+      });
+      navigateSignIn();
+
+    } catch (Error) {
+
+      getConfirmModalRef().show({
+        message: 'Email não cadastrado!',
+
+      });
+
+      console.log(Error);
+    }
   };
 
   const navigateSignIn = (): void => {
     props.navigation.navigate(AppRoute.SIGN_IN);
   };
-
-  const renderForm = (props: FormikProps<ResetPasswordData>): React.ReactFragment => (
-    <React.Fragment>
-      <FormInput
-        id='email'
-        style={styles.formControl}
-        placeholder='Email'
-        keyboardType='email-address'
-      />
-      <Button
-        style={styles.button}
-        onPress={props.handleSubmit}>
-        FEITO
-      </Button>
-    </React.Fragment>
-  );
 
   return (
     <React.Fragment>
@@ -51,10 +91,33 @@ export const ResetPasswordScreen = (props: ResetPasswordScreenProps): LayoutElem
         <Formik
           initialValues={ResetPasswordData.empty()}
           validationSchema={ResetPasswordSchema}
-          onSubmit={onFormSubmit}>
-          {renderForm}
+          onSubmit={onFormSubmit}
+        >
+          {({ handleSubmit }) =>
+            <React.Fragment>
+              <FormInput
+                id="email"
+                value={formData.email}
+                style={styles.formControl}
+                placeholder='Email'
+                keyboardType='email-address'
+                onChange={e => {
+                  setFormData({
+                    ...formData,
+                    email: e.nativeEvent.text,
+                  });
+                }}
+              />
+              <Button
+                style={styles.button}
+                onPress={handleSubmit}>
+                ENVIAR
+              </Button>
+            </React.Fragment>
+          }
         </Formik>
       </Layout>
+      <ConfirmModal ref={confirmModalRef} />
     </React.Fragment>
   );
 };
