@@ -13,10 +13,7 @@ import {
   TodoTabBar,
   ButtonsControl,
 } from '../scenes/todo';
-import { DoneAllIcon, GridIcon } from '../assets/icons';
-
-
-
+import { DoneAllIcon, GridIcon, mapbox } from '../assets/icons';
 
 type TodoNavigatorParams = {
   [AppRoute.TODO]: undefined;
@@ -64,7 +61,7 @@ const TodoTabsNavigator = (): React.ReactElement => (
     <TopTab.Screen
       name={AppRoute.TODO_DONE}
       component={TodoDoneScreen}
-      options={{ title: 'FEITO', tabBarIcon: DoneAllIcon }}
+      options={{ title: 'MAPA', tabBarIcon: mapbox }}
     />
   </TopTab.Navigator>
 );

@@ -49,6 +49,10 @@ export const DoneAllIcon = (props): IconElement => (
   <Icon {...props} name='done-all-outline'/>
 );
 
+export const mapbox = (props): IconElement => (
+  <Icon {...props} name='map'/>
+);
+
 export const GridIcon = (props): IconElement => (
   <Icon {...props} name='grid-outline'/>
 );
