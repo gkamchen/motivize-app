@@ -36,6 +36,7 @@
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.7.0",
     "react-native-svg": "9.13.3",
+    "react-native-svg-charts": "^5.4.0",
     "yup": "^0.28.1"
   },
   "devDependencies": {

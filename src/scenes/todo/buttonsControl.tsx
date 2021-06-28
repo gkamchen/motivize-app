@@ -1,4 +1,7 @@
-import React, { useEffect } from 'react';
+import React, {
+  useEffect,
+  Component,
+} from 'react';
 import {
   StyleSheet,
   View,
@@ -16,6 +19,8 @@ import {
 } from '@ui-kitten/components';
 import Geolocation from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-community/async-storage';
+import { PieChart } from 'react-native-svg-charts'
+import { number } from 'yup';
 
 const StarIcon = (props) => (
   <Icon {...props} name='star' />
@@ -96,9 +101,44 @@ function returnDateTime() {
   var dataF = (dia + "/" + mes + "/" + ano)
   var horario = (hora + ":" + min + ":" + seg);
 
-  return { dataF, horario };
+  var segundoHora = converterHoraParaSegundo(horario);
+
+  return { data, dataF, horario, segundoHora };
 
 };
+
+const converterHoraParaSegundo = (horario: string) => {
+
+  log('HORA PARA CONVERÇÃO',horario);
+
+  var hor = horario.split(':');
+
+  var horSeg = Number(hor[0]) * 3600;
+  var minSeg = Number(hor[1]) * 60;
+  var seg = Number(hor[2]) + minSeg + horSeg;
+
+  return seg.toString();
+  
+};
+
+const converterSegundoParaHora = (segundos: string) => {
+
+  var seg = Number(segundos);
+
+  var ar = (seg/3600).toString().split('.');
+  
+  var hor = ar [0];
+
+  var ar2 = (0.60 * Number(ar[1])).toString().split('.');
+  var min = ar2[0].substring(0,2);
+  var sec = (0.60 * Number(ar2[0].substring(2))).toString().substring(0,2);
+
+  var hora = hor + ':' + min + ':' + sec
+
+  log('TOTAL HORAS',hora);
+
+};
+
 
 const log = (chave: any = "", log: any = "", erro: any = "") => {
 
@@ -113,15 +153,14 @@ const log = (chave: any = "", log: any = "", erro: any = "") => {
 
 export const ButtonsControl = () => {
 
-
   const [currentLatitude, setCurrentLatitude] = React.useState(0);
   const [currentLongitude, setCurrentLongitude] = React.useState(0);
 
   const [currentDay, setDay] = React.useState('00/00/0000');
-  const [currentUser, setUser] = React.useState('Wagner');
-  const [currentHorTrab, setHorTrab] = React.useState('0.0');
-  const [currentHorAten, setHorAten] = React.useState('0.0');
-  const [currentHorDesl, setHorDesl] = React.useState('0.0');
+  const [currentUser, setUser] = React.useState('@TODO - NAME USER');
+  const [currentHorTrab, setHorTrab] = React.useState(2);
+  const [currentHorAten, setHorAten] = React.useState(3);
+  const [currentHorDesl, setHorDesl] = React.useState(10);
 
   const [currentIniDia, setIniDia] = React.useState('');
   const [currentFimDia, setFimDia] = React.useState('');
@@ -140,7 +179,20 @@ export const ButtonsControl = () => {
     callLocation();
   }, []);
 
-  function limparCamposVariaveis() {
+  const iniciarCroDia = () => {
+
+  };
+
+  const iniciarCroAte = () => {
+
+  };
+
+  const iniciarCroInt = () => {
+
+  };
+
+
+  const limparCamposVariaveis = () => {
 
     setDay('');
     setIniDia('');
@@ -301,7 +353,7 @@ export const ButtonsControl = () => {
 
       disabledAllButton();
 
-      inicioIntervalo = returnDateTime().horario;
+      inicioIntervalo = returnDateTime().segundoHora;
       fimIntervalo = ""
 
       setIniInt(inicioIntervalo);
@@ -315,7 +367,7 @@ export const ButtonsControl = () => {
 
       disabledAllButton();
 
-      fimIntervalo = returnDateTime().horario;
+      fimIntervalo = returnDateTime().segundoHora;
 
       setFimInt(fimIntervalo);
 
@@ -425,6 +477,8 @@ export const ButtonsControl = () => {
       ATIVAR_BATENDIMENTO = ENABLE_BOTTON;
       ATIVAR_BINTERVALO = DISABLE_BOTTON;
 
+      calcularDifHora();
+
     } else {
 
       ATIVAR_BDIA = ENABLE_BOTTON;
@@ -440,6 +494,35 @@ export const ButtonsControl = () => {
 
   };
 
+  const data = [currentHorTrab, currentHorAten, currentHorDesl]
+
+  const randomColor = () => ('#' + ((Math.random() * 0xffffff) << 0).toString(16) + '000000').slice(0, 7)
+
+  const calcularDifHora = () => {
+
+    console.log(inicioIntervalo);
+    console.log(fimIntervalo);
+
+
+
+    // var hrIni = Date.parse(inicioIntervalo);
+    // var hrF = Date.parse(fimIntervalo);
+    // var hrTot = new Date();
+    // hrTot.setHours(hrIni.getHours()-hrF.getHours());         //Calcular um menos o outro
+    // console.log(hrTot);                       //quero mostrar em um alert o total das horas 
+  }
+
+  const pieData = data
+    .filter((value) => value > 0)
+    .map((value, index) => ({
+      value,
+      svg: {
+        fill: randomColor(),
+        onPress: () => console.log('press', index),
+      },
+      key: `pie-${index}`,
+    }));
+
   return (
     <Layout style={styles.container} level='3'>
 
@@ -449,7 +532,9 @@ export const ButtonsControl = () => {
 
       <Card style={styles.card} status='danger'>
 
-        <Text style={styles.text} status='warning'>{currentDay} </Text>
+        <PieChart style={{ height: 250 }} data={pieData} />
+
+        {/* <Text style={styles.text} status='warning'>{currentDay} </Text>
         <Text style={styles.text} status='danger'> {currentUser} </Text>
         <Text style={styles.text} status='success'>Horas Trabalhadas: {currentHorTrab}</Text>
         <Text style={styles.text} status='success'>Horas Atendimento: {currentHorAten}</Text>
@@ -457,7 +542,7 @@ export const ButtonsControl = () => {
 
         <Text style={styles.text} status='info'>Inicio Dia: {currentIniDia} | Fim Dia: {currentFimDia} </Text>
         <Text style={styles.text} status='info'>Inicio Intervalo: {currentIniInt} | Fim Intervalo: {currentFimInt}</Text>
-        <Text style={styles.text} status='info'>Inicio Atendimento: {currentIniAte} | Fim Atendimento: {currentFimAte}</Text>
+        <Text style={styles.text} status='info'>Inicio Atendimento: {currentIniAte} | Fim Atendimento: {currentFimAte}</Text> */}
 
         <Button style={styles.button} disabled={ATIVAR_BINTERVALO} status={INTERVALO_STATUS} appearance={INTERVALO_APAR} accessoryLeft={StarIcon} onPress={onIntervalo}>
           {bIntervalor}
@@ -473,7 +558,6 @@ export const ButtonsControl = () => {
 
       </Card>
 
-
     </Layout>
   );
 };
@@ -482,7 +566,7 @@ export const ButtonsControl = () => {
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    
+
     justifyContent: 'center',
   },
   button: {
@@ -501,3 +585,4 @@ const styles = StyleSheet.create({
     margin: 4,
   },
 });
+

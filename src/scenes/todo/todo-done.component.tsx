@@ -54,7 +54,7 @@ export const TodoDoneScreen = (): any => {
   return (
     <View style={{ flex: 1, height: "100%", width: "100%" }}>
       <MapboxGL.MapView
-        styleURL={MapboxGL.StyleURL.Dark}
+        styleURL={MapboxGL.StyleURL.Street}
         style={{ flex: 1 }}>
         <MapboxGL.Camera
           zoomLevel={17}
