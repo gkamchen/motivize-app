@@ -20,7 +20,7 @@ import {
 import Geolocation from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-community/async-storage';
 import { PieChart } from 'react-native-svg-charts'
-import { number } from 'yup';
+import { RESULTS } from 'react-native-permissions';
 
 const StarIcon = (props) => (
   <Icon {...props} name='star' />
@@ -47,10 +47,6 @@ const FIM_STATUS = 'danger';
 const APAR_INI = 'filled';
 const APAR_FIM = 'outline';
 
-const STOP = 'stop';
-const START = 'start';
-const CLEAR = 'clear';
-
 const DISABLE_BOTTON = true;
 const ENABLE_BOTTON = false;
 
@@ -71,25 +67,30 @@ var ATENDIMENTO_STATUS = INI_STATUS;
 var ATENDIMENTO_APAR = APAR_INI;
 
 //Variavei de controle
-var cronometroDia: string = '';
 var day: string = '';
-var inicioIntervalo: string = '';
-var fimIntervalo: string = '';
-var inicioAtendimento: string = '';
-var fimAtendimento: string = '';
-var inicioDia: string = '';
-var fimDia: string = '';
+var inicioIntervalo = 0;
+var fimIntervalo = 0;
+var inicioAtendimento = 0;
+var fimAtendimento = 0;
+var inicioDia = 0;
+var fimDia = 0;
 var chaveIntervalo: string = '';
 var chaveAtendimento: string = '';
-var chaveDia: string = '';
 var longitude: string = '';
 var latitude: string = '';
+
+var pausarCronDia = false;
+var pausarCronAte = false;
+var pausarCronInt = false;
+var pausarCronGra = false;
+
+var somaAtendimento = 0;
+var somaIntervalo = 0;
+var somaDesl = 0;
 
 function returnDateTime() {
 
   var data = new Date();
-
-  log('Data Hora', data)
 
   var dia = data.getDate();           // 1-31
   var mes = data.getMonth();          // 0-11 (zero=janeiro)
@@ -102,14 +103,11 @@ function returnDateTime() {
   var horario = (hora + ":" + min + ":" + seg);
 
   var segundoHora = converterHoraParaSegundo(horario);
-
   return { data, dataF, horario, segundoHora };
 
 };
 
 const converterHoraParaSegundo = (horario: string) => {
-
-  log('HORA PARA CONVERÇÃO',horario);
 
   var hor = horario.split(':');
 
@@ -117,25 +115,23 @@ const converterHoraParaSegundo = (horario: string) => {
   var minSeg = Number(hor[1]) * 60;
   var seg = Number(hor[2]) + minSeg + horSeg;
 
-  return seg.toString();
-  
+  return seg;
+
 };
 
-const converterSegundoParaHora = (segundos: string) => {
+const converterSegundoParaHora = (seg: number) => {
 
-  var seg = Number(segundos);
+  var ar = (seg / 3600).toString().split('.');
 
-  var ar = (seg/3600).toString().split('.');
-  
-  var hor = ar [0];
+  var hor = ar[0];
 
   var ar2 = (0.60 * Number(ar[1])).toString().split('.');
-  var min = ar2[0].substring(0,2);
-  var sec = (0.60 * Number(ar2[0].substring(2))).toString().substring(0,2);
+  var min = ar2[0].substring(0, 2);
+  var sec = (0.60 * Number(ar2[0].substring(2))).toString().substring(0, 2);
 
   var hora = hor + ':' + min + ':' + sec
 
-  log('TOTAL HORAS',hora);
+  return hora;
 
 };
 
@@ -151,81 +147,113 @@ const log = (chave: any = "", log: any = "", erro: any = "") => {
   if (erro != "") { console.log('Error:  ' + erro) };
 };
 
+//////////////////// APLICAÇÃo ////////////////////////
+
 export const ButtonsControl = () => {
 
   const [currentLatitude, setCurrentLatitude] = React.useState(0);
   const [currentLongitude, setCurrentLongitude] = React.useState(0);
 
-  const [currentDay, setDay] = React.useState('00/00/0000');
-  const [currentUser, setUser] = React.useState('@TODO - NAME USER');
-  const [currentHorTrab, setHorTrab] = React.useState(2);
-  const [currentHorAten, setHorAten] = React.useState(3);
-  const [currentHorDesl, setHorDesl] = React.useState(10);
-
-  const [currentIniDia, setIniDia] = React.useState('');
-  const [currentFimDia, setFimDia] = React.useState('');
-  const [currentIniInt, setIniInt] = React.useState('');
-  const [currentFimInt, setFimInt] = React.useState('');
-  const [currentIniAte, setIniAte] = React.useState('');
-  const [currentFimAte, setFimAte] = React.useState('');
+  const [currentHorInt, setHorInt] = React.useState(0);
+  const [currentHorAten, setHorAten] = React.useState(0);
+  const [currentHorDesl, setHorDesl] = React.useState(1);
 
   const [bDia, setDia] = React.useState(INI_DIA);
   const [bAtendimento, setAtendimento] = React.useState(INI_ATENDIMENTO);
   const [bIntervalor, setIntervalo] = React.useState(INI_INTERVALO);
 
-  const [currentCroDia, setCroDia] = React.useState('');
+  const [pieData, setPieData]: any = React.useState([]);
 
   useEffect(() => {
     callLocation();
+    atualizarGrafico();
   }, []);
 
-  const iniciarCroDia = () => {
-
+  const Color = (index: number) => {
+    var ar = ['#ff0009', '#8FC617', '#04CEF7'];
+    return ar[index];
   };
-
-  const iniciarCroAte = () => {
-
-  };
-
-  const iniciarCroInt = () => {
-
-  };
-
 
   const limparCamposVariaveis = () => {
-
-    setDay('');
-    setIniDia('');
-    setFimDia('');
-    setIniInt('');
-    setFimInt('');
-    setIniAte('');
-    setFimAte('');
-
-    cronometroDia = '';
+  
     day = '';
-    inicioIntervalo = '';
-    fimIntervalo = '';
-    inicioAtendimento = '';
-    fimAtendimento = '';
-    inicioDia = '';
-    fimDia = '';
+    inicioIntervalo = 0;
+    fimIntervalo = 0;
+    inicioAtendimento = 0;
+    fimAtendimento = 0;
+    inicioDia = 0;
+    fimDia = 0;
     chaveIntervalo = '';
     chaveAtendimento = '';
-    chaveDia = '';
     longitude = '';
-    latitude = '';
+    latitude = ''
+    pausarCronDia = false;
+    pausarCronAte = false;
+    pausarCronInt = false;
+    pausarCronGra = false
+    somaAtendimento = 0;
+    somaIntervalo = 0;
+    somaDesl = 0;
+
+    setHorInt(somaIntervalo);
+    setHorAten(somaAtendimento);
+    setHorDesl(somaDesl);
 
   };
 
-  const atualizarBancoDados = () => {
+
+  const atualizarGrafico = async () => {
+
+    var data = [currentHorDesl, currentHorAten, currentHorInt]
+
+    let pieData2 = data
+      .filter((value) => value > 0)
+      .map((value, index) => ({
+        value,
+        svg: {
+          fill: Color(index),
+          onPress: () => console.log('press', index),
+        },
+        key: `pie-${index}`,
+      }));
+
+    setPieData(pieData2);
+  }
+
+  const somarDesl = async () => {
+    somaDesl = (returnDateTime().segundoHora - inicioDia) - (somaAtendimento + somaIntervalo);
+    setHorDesl(somaDesl);
+
+    if (pausarCronDia === false) {
+      setTimeout(somarDesl, 1000);
+    }
+  };
+
+  const somarAte = async () => {
+    let resultado = somaAtendimento + (returnDateTime().segundoHora - inicioAtendimento);
+    setHorAten(resultado);
+
+    if (pausarCronAte === false) {
+      setTimeout(somarAte, 1000);
+    } else {
+      somaAtendimento = resultado;
+    };
+
+  };
+
+  const somarInt = async () => {
+    let resultado = somaIntervalo + (returnDateTime().segundoHora - inicioIntervalo);
+    setHorInt(resultado);
+
+    if (pausarCronInt === false) {
+      setTimeout(somarInt, 1000);
+    } else {
+      somaIntervalo = resultado;
+    };
 
   };
 
   const GravarInicioInt = () => {
-
-    log('data', currentDay);
-    log('inicioInt', currentIniInt);
 
     const intervalo = {
       'data': day,
@@ -239,7 +267,7 @@ export const ButtonsControl = () => {
     };
 
     var inter = JSON.stringify(intervalo);
-    var chave = day + ' - ' + inicioIntervalo;
+    var chave = 'int-' + day + '-' + inicioIntervalo;
 
     chaveIntervalo = chave;
     gravar(chave, inter);
@@ -274,11 +302,61 @@ export const ButtonsControl = () => {
 
       var inter = JSON.stringify(intervalo);
 
-      log('JSON STRING', inter);
-
       gravar(chaveIntervalo, inter);
 
-      atualizarBancoDados();
+    }
+  };
+
+  const GravarInicioAte = () => {
+
+    const atendimento = {
+      'data': day,
+      'inicioAte': inicioAtendimento,
+      'info':
+      {
+        'latitude': latitude,
+        'longitude': longitude,
+        'fimAte': fimAtendimento,
+      }
+    };
+
+    var inter = JSON.stringify(atendimento);
+    var chave = 'ate-' + day + '-' + inicioAtendimento;
+
+    chaveAtendimento = chave;
+    gravar(chave, inter);
+
+  };
+
+  const gravarFimAte = async () => {
+
+    var valor = await buscar(chaveAtendimento);
+
+    if (valor != null) {
+
+      var obj = JSON.parse(valor);
+
+      var data = obj.data;
+      var inicioAte = obj.inicioInt;
+      var infoLat = obj.info.latitude;
+      var infoLon = obj.info.longitude;
+
+      const atendimento = {
+        'data': data,
+        'inicioAte': inicioAte,
+        'info':
+        {
+          'latitude': infoLat,
+          'longitude': infoLon,
+          'fimAte': fimAtendimento,
+        }
+      };
+
+      deletar(chaveAtendimento);
+
+      var inter = JSON.stringify(atendimento);
+
+      gravar(chaveAtendimento, inter);
 
     }
   };
@@ -288,13 +366,11 @@ export const ButtonsControl = () => {
   };
 
   const gravar = (chave: string, valor: any) => {
-    log(chave, valor);
     AsyncStorage.setItem(chave, valor);
   };
 
   const buscar = async (chave: string) => {
     const valor = await AsyncStorage.getItem(chave);
-    log(chave, valor)
     return valor;
   };
 
@@ -303,26 +379,27 @@ export const ButtonsControl = () => {
     if (Platform.OS === 'ios') {
       getLocation();
     } else {
-      const requestLocationPermission = async () => {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          {
-            title: "Permissão de Acesso à Localização",
-            message: "Este aplicativo precisa acessar sua localização.",
-            buttonNeutral: "Pergunte-me depois",
-            buttonNegative: "Cancelar",
-            buttonPositive: "OK"
-          }
-        );
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          getLocation();
-        } else {
-          console.log('Permissão de Localização negada');
-        }
-      };
       requestLocationPermission();
     }
   }
+
+  const requestLocationPermission = async () => {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: "Permissão de Acesso à Localização",
+        message: "Este aplicativo precisa acessar sua localização.",
+        buttonNeutral: "Pergunte-me depois",
+        buttonNegative: "Cancelar",
+        buttonPositive: "OK"
+      }
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      getLocation();
+    } else {
+      console.log('Permissão de Localização negada');
+    }
+  };
 
   const getLocation = () => {
     Geolocation.getCurrentPosition(
@@ -343,99 +420,103 @@ export const ButtonsControl = () => {
     ATIVAR_BATENDIMENTO = DISABLE_BOTTON;
     ATIVAR_BINTERVALO = DISABLE_BOTTON;
 
-    setIntervalo(INTERVALO);
-
+    setIntervalo(DIA);
   };
 
   const onIntervalo = () => {
+    disabledAllButton();
 
     if (INTERVALO === INI_INTERVALO) {
 
-      disabledAllButton();
+      pausarCronInt = false;
+      pausarCronDia = true;
 
       inicioIntervalo = returnDateTime().segundoHora;
-      fimIntervalo = ""
+      fimIntervalo = 0;
 
-      setIniInt(inicioIntervalo);
-      setFimInt(fimIntervalo);
-
+      callLocation();
       GravarInicioInt();
-
+      somarInt();
+      atualizarGrafico();
       ativarBotIntervalo();
 
     } else {
 
-      disabledAllButton();
+      pausarCronInt = true;
+      pausarCronDia = false;
 
       fimIntervalo = returnDateTime().segundoHora;
 
-      setFimInt(fimIntervalo);
-
+      callLocation();
       gravarFimIntervalor();
-
+      somarDesl();
+      atualizarGrafico();
       desativerBotIntervalo();
 
-    }
-
-  };
-
-  const ativarBotIntervalo = () => {
-
-    INTERVALO = FIM_INTERVALO;
-    INTERVALO_STATUS = FIM_STATUS;
-    INTERVALO_APAR = APAR_FIM;
-
-    ATIVAR_BDIA = DISABLE_BOTTON;
-    ATIVAR_BATENDIMENTO = DISABLE_BOTTON;
-    ATIVAR_BINTERVALO = ENABLE_BOTTON;
-
-    setIntervalo(INTERVALO);
-  };
-
-  const desativerBotIntervalo = () => {
-
-    ATIVAR_BDIA = ENABLE_BOTTON;
-    ATIVAR_BATENDIMENTO = ENABLE_BOTTON;
-    ATIVAR_BINTERVALO = ENABLE_BOTTON;
-
-    INTERVALO = INI_INTERVALO;
-    INTERVALO_STATUS = INI_STATUS;
-    INTERVALO_APAR = APAR_INI;
-
-    setIntervalo(INTERVALO);
-  };
-
-  const onDia = () => {
-
-    if (DIA === INI_DIA) {
-
-      disabledAllButton();
-
-      limparCamposVariaveis();
-
-      day = returnDateTime().dataF;
-      fimDia = ""
-      inicioDia = returnDateTime().horario;
-
-      setDay(day);
-      setIniDia(inicioDia);
-      setFimDia(fimDia);
-
-      ativarBotDia();
-
-    } else {
-
-      disabledAllButton();
-
-      fimDia = returnDateTime().horario;
-
-      setFimDia(fimDia);
-
-      desativarBotDia();
     };
 
   };
 
+  const onAtendimento = () => {
+    disabledAllButton();
+    
+    if (ATENDIMENTO === INI_ATENDIMENTO) {
+
+      inicioAtendimento = returnDateTime().segundoHora;
+      fimAtendimento = 0;
+      pausarCronAte = false;
+      pausarCronDia = true;
+
+      callLocation();
+      GravarInicioAte();
+      somarAte();
+      atualizarGrafico();
+      ativarBotAtendimento();
+
+    } else {
+      pausarCronAte = true;
+      pausarCronDia = false;
+      fimAtendimento = returnDateTime().segundoHora;
+
+      callLocation();
+      gravarFimAte();
+      somarDesl();
+      atualizarGrafico();
+      desativarBotAtenimento();
+    }
+
+  };
+
+  const onDia = () => {
+    
+    disabledAllButton();
+
+    if (DIA === INI_DIA) {
+      limparCamposVariaveis();
+
+      pausarCronDia = false;
+      pausarCronGra = false;
+      inicioDia = returnDateTime().segundoHora;
+      day = returnDateTime().dataF;
+      fimDia = 0;
+
+      callLocation();
+      somarDesl();
+      atualizarGrafico();
+      ativarBotDia();
+
+    } else {
+
+      pausarCronDia = true;
+      pausarCronGra = true;
+      fimDia = returnDateTime().segundoHora;
+
+      callLocation();
+      atualizarGrafico();
+      desativarBotDia();
+    };
+
+  };
   // Desativa os botões com relação ao fim do dia
   const desativarBotDia = () => {
 
@@ -464,85 +545,65 @@ export const ButtonsControl = () => {
     setDia(DIA);
   };
 
-  const onAtendimento = () => {
+  const ativarBotAtendimento = () => {
+    ATENDIMENTO = FIM_ATENDIMENTO;
+    ATENDIMENTO_STATUS = FIM_STATUS;
+    ATENDIMENTO_APAR = APAR_FIM;
 
-
-    if (ATENDIMENTO === INI_ATENDIMENTO) {
-
-      ATENDIMENTO = FIM_ATENDIMENTO;
-      ATENDIMENTO_STATUS = FIM_STATUS;
-      ATENDIMENTO_APAR = APAR_FIM;
-
-      ATIVAR_BDIA = DISABLE_BOTTON;
-      ATIVAR_BATENDIMENTO = ENABLE_BOTTON;
-      ATIVAR_BINTERVALO = DISABLE_BOTTON;
-
-      calcularDifHora();
-
-    } else {
-
-      ATIVAR_BDIA = ENABLE_BOTTON;
-      ATIVAR_BATENDIMENTO = ENABLE_BOTTON;
-      ATIVAR_BINTERVALO = ENABLE_BOTTON;
-
-      ATENDIMENTO = INI_ATENDIMENTO;
-      ATENDIMENTO_STATUS = INI_STATUS;
-      ATENDIMENTO_APAR = APAR_INI;
-
-    }
+    ATIVAR_BDIA = DISABLE_BOTTON;
+    ATIVAR_BATENDIMENTO = ENABLE_BOTTON;
+    ATIVAR_BINTERVALO = DISABLE_BOTTON;
     setAtendimento(ATENDIMENTO);
-
   };
 
-  const data = [currentHorTrab, currentHorAten, currentHorDesl]
+  const desativarBotAtenimento = () => {
+    ATIVAR_BDIA = ENABLE_BOTTON;
+    ATIVAR_BATENDIMENTO = ENABLE_BOTTON;
+    ATIVAR_BINTERVALO = ENABLE_BOTTON;
 
-  const randomColor = () => ('#' + ((Math.random() * 0xffffff) << 0).toString(16) + '000000').slice(0, 7)
+    ATENDIMENTO = INI_ATENDIMENTO;
+    ATENDIMENTO_STATUS = INI_STATUS;
+    ATENDIMENTO_APAR = APAR_INI;
 
-  const calcularDifHora = () => {
+    setAtendimento(ATENDIMENTO);
+  };
 
-    console.log(inicioIntervalo);
-    console.log(fimIntervalo);
+  const ativarBotIntervalo = () => {
 
+    INTERVALO = FIM_INTERVALO;
+    INTERVALO_STATUS = FIM_STATUS;
+    INTERVALO_APAR = APAR_FIM;
 
+    ATIVAR_BDIA = DISABLE_BOTTON;
+    ATIVAR_BATENDIMENTO = DISABLE_BOTTON;
+    ATIVAR_BINTERVALO = ENABLE_BOTTON;
 
-    // var hrIni = Date.parse(inicioIntervalo);
-    // var hrF = Date.parse(fimIntervalo);
-    // var hrTot = new Date();
-    // hrTot.setHours(hrIni.getHours()-hrF.getHours());         //Calcular um menos o outro
-    // console.log(hrTot);                       //quero mostrar em um alert o total das horas 
-  }
+    setIntervalo(INTERVALO);
+  };
 
-  const pieData = data
-    .filter((value) => value > 0)
-    .map((value, index) => ({
-      value,
-      svg: {
-        fill: randomColor(),
-        onPress: () => console.log('press', index),
-      },
-      key: `pie-${index}`,
-    }));
+  const desativerBotIntervalo = () => {
+
+    ATIVAR_BDIA = ENABLE_BOTTON;
+    ATIVAR_BATENDIMENTO = ENABLE_BOTTON;
+    ATIVAR_BINTERVALO = ENABLE_BOTTON;
+
+    INTERVALO = INI_INTERVALO;
+    INTERVALO_STATUS = INI_STATUS;
+    INTERVALO_APAR = APAR_INI;
+
+    setIntervalo(INTERVALO);
+  };
 
   return (
     <Layout style={styles.container} level='3'>
 
       <Card style={styles.card} status='danger'>
-        <Text style={styles.text} status='primary'>{currentLatitude}   {currentLongitude} </Text>
-      </Card>
-
-      <Card style={styles.card} status='danger'>
 
         <PieChart style={{ height: 250 }} data={pieData} />
 
-        {/* <Text style={styles.text} status='warning'>{currentDay} </Text>
-        <Text style={styles.text} status='danger'> {currentUser} </Text>
-        <Text style={styles.text} status='success'>Horas Trabalhadas: {currentHorTrab}</Text>
-        <Text style={styles.text} status='success'>Horas Atendimento: {currentHorAten}</Text>
-        <Text style={styles.text} status='success'>Horas Deslocamento: {currentHorDesl}</Text>
-
-        <Text style={styles.text} status='info'>Inicio Dia: {currentIniDia} | Fim Dia: {currentFimDia} </Text>
-        <Text style={styles.text} status='info'>Inicio Intervalo: {currentIniInt} | Fim Intervalo: {currentFimInt}</Text>
-        <Text style={styles.text} status='info'>Inicio Atendimento: {currentIniAte} | Fim Atendimento: {currentFimAte}</Text> */}
+        <Text style={styles.text} status='success'>INTERVALO: {currentHorInt}</Text>
+        <Text style={styles.text} status='info'>ATENDIMENTO: {currentHorAten} </Text>
+        <Text style={styles.text} status='danger'> DESLOCAMENTO: {currentHorDesl} </Text>
 
         <Button style={styles.button} disabled={ATIVAR_BINTERVALO} status={INTERVALO_STATUS} appearance={INTERVALO_APAR} accessoryLeft={StarIcon} onPress={onIntervalo}>
           {bIntervalor}
@@ -566,7 +627,6 @@ export const ButtonsControl = () => {
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-
     justifyContent: 'center',
   },
   button: {
