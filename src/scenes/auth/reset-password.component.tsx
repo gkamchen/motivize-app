@@ -39,8 +39,9 @@ export const ResetPasswordScreen = (props: ResetPasswordScreenProps): LayoutElem
 
   const [formData, setFormData] = useState(ResetPasswordData.empty());
 
-  const onFormSubmit = async (values: ResetPasswordData): Promise<void> => {
+  const onFormSubmit = async (values) => {
     try {
+
       const { data } = await axios.post(
         'https://parseapi.back4app.com/requestPasswordReset',
         {
@@ -56,10 +57,6 @@ export const ResetPasswordScreen = (props: ResetPasswordScreenProps): LayoutElem
       );
 
       setFormData(ResetPasswordData.empty());
-      getConfirmModalRef().show({
-        message: 'Email enviado!',
-
-      });
       navigateSignIn();
 
     } catch (Error) {
