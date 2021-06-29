@@ -91,13 +91,13 @@ export const SignInScreen = (props: SignInScreenProps) => {
         accessoryRight={renderPasswordIcon}
       />
       <View style={styles.resetPasswordContainer}>
-        <CheckBox
+        {/* <CheckBox
           style={styles.formControl}
           checked={shouldRemember}
           disabled
           onChange={setShouldRemember}>
           Lembrar-me
-        </CheckBox>
+        </CheckBox> */}
         <Button
           appearance='ghost'
           status='basic'
