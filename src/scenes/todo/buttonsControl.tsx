@@ -86,7 +86,9 @@ var pausarCronGra = false;
 
 var somaAtendimento = 0;
 var somaIntervalo = 0;
-var somaDesl = 0;
+var somaDesl = 1;
+
+const color = ['#ff0009', '#8FC617', '#04CEF7'];
 
 function returnDateTime() {
 
@@ -169,13 +171,12 @@ export const ButtonsControl = () => {
     atualizarGrafico();
   }, []);
 
-  const Color = (index: number) => {
-    var ar = ['#ff0009', '#8FC617', '#04CEF7'];
-    return ar[index];
-  };
+
+
+  const delay = ms => new Promise(res => setTimeout(res, ms));
 
   const limparCamposVariaveis = () => {
-  
+
     day = '';
     inicioIntervalo = 0;
     fimIntervalo = 0;
@@ -193,31 +194,36 @@ export const ButtonsControl = () => {
     pausarCronGra = false
     somaAtendimento = 0;
     somaIntervalo = 0;
-    somaDesl = 0;
+    somaDesl = 1;
 
-    setHorInt(somaIntervalo);
-    setHorAten(somaAtendimento);
-    setHorDesl(somaDesl);
+    setHorInt(0);
+    setHorAten(0);
+    setHorDesl(1);
 
   };
 
-
   const atualizarGrafico = async () => {
 
-    var data = [currentHorDesl, currentHorAten, currentHorInt]
+    await delay(4000);
+
+    var data = [somaDesl, somaIntervalo, somaAtendimento]
 
     let pieData2 = data
       .filter((value) => value > 0)
       .map((value, index) => ({
         value,
         svg: {
-          fill: Color(index),
+          fill: color[index],
           onPress: () => console.log('press', index),
         },
         key: `pie-${index}`,
       }));
 
     setPieData(pieData2);
+
+    if (pausarCronGra === false) {
+      atualizarGrafico();
+    }
   }
 
   const somarDesl = async () => {
@@ -238,7 +244,6 @@ export const ButtonsControl = () => {
     } else {
       somaAtendimento = resultado;
     };
-
   };
 
   const somarInt = async () => {
@@ -250,7 +255,6 @@ export const ButtonsControl = () => {
     } else {
       somaIntervalo = resultado;
     };
-
   };
 
   const GravarInicioInt = () => {
@@ -366,6 +370,7 @@ export const ButtonsControl = () => {
   };
 
   const gravar = (chave: string, valor: any) => {
+    log(chave,valor)
     AsyncStorage.setItem(chave, valor);
   };
 
@@ -420,7 +425,7 @@ export const ButtonsControl = () => {
     ATIVAR_BATENDIMENTO = DISABLE_BOTTON;
     ATIVAR_BINTERVALO = DISABLE_BOTTON;
 
-    setIntervalo(DIA);
+    setDia(DIA);
   };
 
   const onIntervalo = () => {
@@ -437,7 +442,6 @@ export const ButtonsControl = () => {
       callLocation();
       GravarInicioInt();
       somarInt();
-      atualizarGrafico();
       ativarBotIntervalo();
 
     } else {
@@ -450,16 +454,14 @@ export const ButtonsControl = () => {
       callLocation();
       gravarFimIntervalor();
       somarDesl();
-      atualizarGrafico();
       desativerBotIntervalo();
-
     };
 
   };
 
   const onAtendimento = () => {
     disabledAllButton();
-    
+
     if (ATENDIMENTO === INI_ATENDIMENTO) {
 
       inicioAtendimento = returnDateTime().segundoHora;
@@ -470,7 +472,6 @@ export const ButtonsControl = () => {
       callLocation();
       GravarInicioAte();
       somarAte();
-      atualizarGrafico();
       ativarBotAtendimento();
 
     } else {
@@ -481,19 +482,19 @@ export const ButtonsControl = () => {
       callLocation();
       gravarFimAte();
       somarDesl();
-      atualizarGrafico();
       desativarBotAtenimento();
     }
 
   };
 
+
+
   const onDia = () => {
-    
+
     disabledAllButton();
 
     if (DIA === INI_DIA) {
       limparCamposVariaveis();
-
       pausarCronDia = false;
       pausarCronGra = false;
       inicioDia = returnDateTime().segundoHora;
@@ -512,7 +513,6 @@ export const ButtonsControl = () => {
       fimDia = returnDateTime().segundoHora;
 
       callLocation();
-      atualizarGrafico();
       desativarBotDia();
     };
 
@@ -598,8 +598,8 @@ export const ButtonsControl = () => {
     <Layout style={styles.container} level='3'>
 
       <Card style={styles.card} status='danger'>
-
         <PieChart style={{ height: 250 }} data={pieData} />
+
 
         <Text style={styles.text} status='success'>INTERVALO: {currentHorInt}</Text>
         <Text style={styles.text} status='info'>ATENDIMENTO: {currentHorAten} </Text>
