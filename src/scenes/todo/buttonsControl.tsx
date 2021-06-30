@@ -86,7 +86,10 @@ var pausarCronGra = false;
 
 var somaAtendimento = 0;
 var somaIntervalo = 0;
-var somaDesl = 1;
+var somaDesl = 0;
+
+var valorIntervalo = 0;
+var valorAtendimento = 0;
 
 const color = ['#ff0009', '#8FC617', '#04CEF7'];
 
@@ -158,7 +161,7 @@ export const ButtonsControl = () => {
 
   const [currentHorInt, setHorInt] = React.useState(0);
   const [currentHorAten, setHorAten] = React.useState(0);
-  const [currentHorDesl, setHorDesl] = React.useState(1);
+  const [currentHorDesl, setHorDesl] = React.useState(0);
 
   const [bDia, setDia] = React.useState(INI_DIA);
   const [bAtendimento, setAtendimento] = React.useState(INI_ATENDIMENTO);
@@ -236,24 +239,24 @@ export const ButtonsControl = () => {
   };
 
   const somarAte = async () => {
-    let resultado = somaAtendimento + (returnDateTime().segundoHora - inicioAtendimento);
-    setHorAten(resultado);
+    somaAtendimento = valorAtendimento + (returnDateTime().segundoHora - inicioAtendimento);
+    setHorAten(somaAtendimento);
 
     if (pausarCronAte === false) {
       setTimeout(somarAte, 1000);
     } else {
-      somaAtendimento = resultado;
+      valorAtendimento = somaAtendimento;
     };
   };
 
   const somarInt = async () => {
-    let resultado = somaIntervalo + (returnDateTime().segundoHora - inicioIntervalo);
-    setHorInt(resultado);
+    somaIntervalo = valorIntervalo + (returnDateTime().segundoHora - inicioIntervalo);
+    setHorInt(somaIntervalo);
 
     if (pausarCronInt === false) {
       setTimeout(somarInt, 1000);
     } else {
-      somaIntervalo = resultado;
+      valorIntervalo = somaIntervalo;
     };
   };
 
