@@ -90,6 +90,7 @@ var somaDesl = 0;
 
 var valorIntervalo = 0;
 var valorAtendimento = 0;
+var valorDeslocamento = 0;
 
 const color = ['#ff0009', '#8FC617', '#04CEF7'];
 
@@ -172,8 +173,7 @@ export const ButtonsControl = () => {
   useEffect(() => {
     callLocation();
     atualizarGrafico();
-  }, []);
-
+  }, [somaDesl, somaIntervalo, somaAtendimento]);
 
 
   const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -197,22 +197,19 @@ export const ButtonsControl = () => {
     pausarCronGra = false
     somaAtendimento = 0;
     somaIntervalo = 0;
-    somaDesl = 1;
+    somaDesl = 0;
 
     setHorInt(0);
     setHorAten(0);
-    setHorDesl(1);
+    setHorDesl(0);
 
   };
 
   const atualizarGrafico = async () => {
 
-    await delay(4000);
-
     var data = [somaDesl, somaIntervalo, somaAtendimento]
 
     let pieData2 = data
-      .filter((value) => value > 0)
       .map((value, index) => ({
         value,
         svg: {
@@ -223,14 +220,11 @@ export const ButtonsControl = () => {
       }));
 
     setPieData(pieData2);
-
-    if (pausarCronGra === false) {
-      atualizarGrafico();
-    }
   }
 
   const somarDesl = async () => {
-    somaDesl = (returnDateTime().segundoHora - inicioDia) - (somaAtendimento + somaIntervalo);
+    somaDesl = somaDesl + 1;
+
     setHorDesl(somaDesl);
 
     if (pausarCronDia === false) {
@@ -239,25 +233,21 @@ export const ButtonsControl = () => {
   };
 
   const somarAte = async () => {
-    somaAtendimento = valorAtendimento + (returnDateTime().segundoHora - inicioAtendimento);
+    somaAtendimento = somaAtendimento + 1;
     setHorAten(somaAtendimento);
 
     if (pausarCronAte === false) {
       setTimeout(somarAte, 1000);
-    } else {
-      valorAtendimento = somaAtendimento;
-    };
+    }
   };
 
   const somarInt = async () => {
-    somaIntervalo = valorIntervalo + (returnDateTime().segundoHora - inicioIntervalo);
+    somaIntervalo = somaIntervalo + 1;
     setHorInt(somaIntervalo);
 
     if (pausarCronInt === false) {
       setTimeout(somarInt, 1000);
-    } else {
-      valorIntervalo = somaIntervalo;
-    };
+    }
   };
 
   const GravarInicioInt = () => {
@@ -373,7 +363,7 @@ export const ButtonsControl = () => {
   };
 
   const gravar = (chave: string, valor: any) => {
-    log(chave,valor)
+    log(chave, valor)
     AsyncStorage.setItem(chave, valor);
   };
 
@@ -442,7 +432,6 @@ export const ButtonsControl = () => {
       inicioIntervalo = returnDateTime().segundoHora;
       fimIntervalo = 0;
 
-      callLocation();
       GravarInicioInt();
       somarInt();
       ativarBotIntervalo();
@@ -454,7 +443,6 @@ export const ButtonsControl = () => {
 
       fimIntervalo = returnDateTime().segundoHora;
 
-      callLocation();
       gravarFimIntervalor();
       somarDesl();
       desativerBotIntervalo();
@@ -472,7 +460,6 @@ export const ButtonsControl = () => {
       pausarCronAte = false;
       pausarCronDia = true;
 
-      callLocation();
       GravarInicioAte();
       somarAte();
       ativarBotAtendimento();
@@ -482,7 +469,6 @@ export const ButtonsControl = () => {
       pausarCronDia = false;
       fimAtendimento = returnDateTime().segundoHora;
 
-      callLocation();
       gravarFimAte();
       somarDesl();
       desativarBotAtenimento();
@@ -504,7 +490,6 @@ export const ButtonsControl = () => {
       day = returnDateTime().dataF;
       fimDia = 0;
 
-      callLocation();
       somarDesl();
       atualizarGrafico();
       ativarBotDia();
@@ -515,7 +500,6 @@ export const ButtonsControl = () => {
       pausarCronGra = true;
       fimDia = returnDateTime().segundoHora;
 
-      callLocation();
       desativarBotDia();
     };
 
