@@ -88,9 +88,18 @@ var somaAtendimento = 0;
 var somaIntervalo = 0;
 var somaDesl = 0;
 
-var valorIntervalo = 0;
-var valorAtendimento = 0;
-var valorDeslocamento = 0;
+var horaInt = 0;
+var minutoInt = 0;
+
+var horaDesl = 0;
+var minutiDesl = 0;
+
+var horaAte = 0;
+var minutoAte = 0;
+
+var segundoDesl = 0;
+var segundoAte = 0;
+var segundoInt = 0;
 
 const color = ['#ff0009', '#8FC617', '#04CEF7'];
 
@@ -160,9 +169,9 @@ export const ButtonsControl = () => {
   const [currentLatitude, setCurrentLatitude] = React.useState(0);
   const [currentLongitude, setCurrentLongitude] = React.useState(0);
 
-  const [currentHorInt, setHorInt] = React.useState(0);
-  const [currentHorAten, setHorAten] = React.useState(0);
-  const [currentHorDesl, setHorDesl] = React.useState(0);
+  const [currentHorInt, setHorInt] = React.useState('');
+  const [currentHorAten, setHorAten] = React.useState('');
+  const [currentHorDesl, setHorDesl] = React.useState('');
 
   const [bDia, setDia] = React.useState(INI_DIA);
   const [bAtendimento, setAtendimento] = React.useState(INI_ATENDIMENTO);
@@ -180,28 +189,34 @@ export const ButtonsControl = () => {
 
   const limparCamposVariaveis = () => {
 
-    day = '';
+    day= '';
     inicioIntervalo = 0;
     fimIntervalo = 0;
     inicioAtendimento = 0;
     fimAtendimento = 0;
-    inicioDia = 0;
-    fimDia = 0;
-    chaveIntervalo = '';
-    chaveAtendimento = '';
-    longitude = '';
-    latitude = ''
+    chaveIntervalo= '';
+    chaveAtendimento= '';
+    longitude= '';
+    latitude = '';
     pausarCronDia = false;
     pausarCronAte = false;
     pausarCronInt = false;
-    pausarCronGra = false
     somaAtendimento = 0;
     somaIntervalo = 0;
     somaDesl = 0;
+    horaInt = 0;
+    minutoInt = 0;
+    horaDesl = 0;
+    minutiDesl = 0;
+    horaAte = 0;
+    minutoAte = 0;
+    segundoDesl = 0;
+    segundoAte = 0;
+    segundoInt = 0;
 
-    setHorInt(0);
-    setHorAten(0);
-    setHorDesl(0);
+    setHorInt('');
+    setHorAten('');
+    setHorDesl('');
 
   };
 
@@ -224,8 +239,19 @@ export const ButtonsControl = () => {
 
   const somarDesl = async () => {
     somaDesl = somaDesl + 1;
+    segundoDesl = segundoDesl + 1;
 
-    setHorDesl(somaDesl);
+    if (segundoDesl === 60) {
+      segundoDesl = 0;
+      minutiDesl = minutiDesl + 1;
+    } else if (minutiDesl === 60) {
+      minutiDesl = 0;
+      horaDesl = horaDesl + 1;
+    }
+
+    var teste = horaDesl + ':' + minutiDesl + ':' + segundoDesl;
+
+    setHorDesl(teste);
 
     if (pausarCronDia === false) {
       setTimeout(somarDesl, 1000);
@@ -234,7 +260,19 @@ export const ButtonsControl = () => {
 
   const somarAte = async () => {
     somaAtendimento = somaAtendimento + 1;
-    setHorAten(somaAtendimento);
+    segundoAte = segundoAte + 1;
+
+    if (segundoAte === 60) {
+      segundoAte = 0;
+      minutoAte = minutoAte + 1;
+    } else if (minutoAte === 60) {
+      minutoAte = 0;
+      horaAte = horaAte + 1;
+    }
+
+    var teste = horaAte + ':' + minutoAte + ':' + segundoAte;
+
+    setHorAten(teste);
 
     if (pausarCronAte === false) {
       setTimeout(somarAte, 1000);
@@ -243,7 +281,19 @@ export const ButtonsControl = () => {
 
   const somarInt = async () => {
     somaIntervalo = somaIntervalo + 1;
-    setHorInt(somaIntervalo);
+    segundoInt = segundoInt + 1;
+
+    if (segundoInt === 60) {
+      segundoInt = 0;
+      minutoInt = minutoInt + 1;
+    } else if (minutoInt === 60) {
+      minutoInt = 0;
+      horaInt = horaInt + 1;
+    }
+
+    var teste = horaInt + ':' + minutoInt + ':' + segundoInt;
+
+    setHorInt(teste);
 
     if (pausarCronInt === false) {
       setTimeout(somarInt, 1000);
