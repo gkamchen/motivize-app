@@ -21,6 +21,8 @@ import Geolocation from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-community/async-storage';
 import { PieChart } from 'react-native-svg-charts'
 import { RESULTS } from 'react-native-permissions';
+import axios from 'axios';
+import { GeoPosition } from 'react-native-geolocation-service';
 
 const StarIcon = (props) => (
   <Icon {...props} name='star' />
@@ -189,14 +191,14 @@ export const ButtonsControl = () => {
 
   const limparCamposVariaveis = () => {
 
-    day= '';
+    day = '';
     inicioIntervalo = 0;
     fimIntervalo = 0;
     inicioAtendimento = 0;
     fimAtendimento = 0;
-    chaveIntervalo= '';
-    chaveAtendimento= '';
-    longitude= '';
+    chaveIntervalo = '';
+    chaveAtendimento = '';
+    longitude = '';
     latitude = '';
     pausarCronDia = false;
     pausarCronAte = false;
@@ -403,6 +405,8 @@ export const ButtonsControl = () => {
 
       var inter = JSON.stringify(atendimento);
 
+      gravarAtendimento(atendimento);
+
       gravar(chaveAtendimento, inter);
 
     }
@@ -567,6 +571,52 @@ export const ButtonsControl = () => {
 
     setDia(DIA);
 
+  };
+
+  const gravarAtendimento = async (dados) => {
+
+
+    try {
+
+      let dadosAtendimento = dados;
+
+      let localizacao =
+      {
+        "__type": "GeoPoint",
+        "latitude": dados.info.latitude,
+        "longitude": dados.info.longitude
+      }
+      
+
+      delete dadosAtendimento.info.latitude;
+      delete dadosAtendimento.info.longitude;
+
+      console.log({
+        'dadosAtendimento': dadosAtendimento,
+        localizacao: localizacao,
+      });
+
+      const { data } = await axios.post(
+        'https://parseapi.back4app.com/classes/Atendimento',
+        {
+          'dadosAtendimento': dadosAtendimento,
+          localizacao: localizacao,
+        },
+        {
+          headers: {
+            'X-Parse-Application-Id': 'Lw7G4z03GONWsOTnnTmIuhB9qfPHW2aulUi6uHNe',
+            'X-Parse-REST-API-Key': 'yh0F4KepoCVEYql8w0fuMgD2glcSHodmTaCm6bqP',
+          },
+
+        },
+      );
+
+      console.log(data);
+
+    } catch (Error) {
+
+      console.log(Error);
+    }
   };
 
   //Ativa os botão com relação ao inicio do dia
